@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: kanthreg.azurecr.io/helmapp
+  repository: kanthreg.azurecr.io/nodejs
   tag: latest
   pullPolicy: Always
 
