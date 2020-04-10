@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: mhc-front
-        image: kanthreg.azurecr.io/kalyan:102
+        image: kanthreg.azurecr.io/kalyan:104
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
