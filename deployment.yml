@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: mhc-front
-        image: __ACR__/kalyan:latest
+        image: __ACR__/kalyan:{build.buildId}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
