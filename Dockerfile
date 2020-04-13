@@ -4,7 +4,7 @@ FROM node:8.16.1-alpine
 WORKDIR /app
 ## it copies the app to /app directory with dependencies.
 COPY package.json /app
-RUN npm install
+RUN npm install express --save
 COPY . /app
 ## it commands to run our app which is index.js.
 CMD node index.js
