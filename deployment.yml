@@ -100,5 +100,26 @@ spec:
   selector:
     app: mhc-back
 
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: simple-fanout-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          serviceName: mhc-back
+          servicePort: 4200
+      - path: /bar
+        backend:
+          serviceName: mhc-front
+          servicePort: 8080
 
 
