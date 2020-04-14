@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: mhc-front
-        image: kanthreg.azurecr.io/demo123:$(Build.BuildId)
+        image: __ACR__
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
