@@ -1,16 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "ebl-chart.fullname" . }}
+  name: ebl-chart
   labels:
-{{ include "ebl-chart.labels" . | indent 4 }}
+    name: ebl-chart
+    version: "v2"
 spec:
-  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 8080
       targetPort: 8080
       protocol: TCP
-      name: http
   selector:
-    app.kubernetes.io/name: {{ include "ebl-chart.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app: ebl-chart
+         
+    version: "v2"
+  type: LoadBalancer

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ebl-chart
+  name: cans
 spec:
   replicas: 1
   strategy:
@@ -13,14 +13,16 @@ spec:
   selector:
     matchLabels:
       app: ebl-chart
+      version: "v2"
   template:
     metadata:
       labels:
         app: ebl-chart
+        version: "v2"
     spec:
       containers:
       - name: ebl-chart
-        image: canaryscr.azurecr.io/stable:v1
+        image: canaryscr.azurecr.io/stable:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
