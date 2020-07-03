@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: ebl-chart
-        image: canaryscr.azurecr.io/stable:v2
+        image: canaryscr.azurecr.io/canary:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
