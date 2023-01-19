@@ -10,7 +10,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  containerRegistryServiceConnection: 'conRegistryServiceConnection'
+  containerRegistryServiceConnection: 'containerRegistryServiceConnection'
   imageRepository: 'signedrepo'
   containerRegistry: 'signedimgcon.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
