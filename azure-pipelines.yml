@@ -38,10 +38,10 @@ stages:
 
     - script: |
         set DOCKER_CONFIG=./.docker
-        mkdir -p $(DOCKER_CONFIG)/trust/private
-        copy $(contentTrust.secureFilePath) $(DOCKER_CONFIG)/trust/private
-        echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)/trust/private"
-        move $(DOCKER_CONFIG)/trust/private/b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+        mkdir -p $(DOCKER_CONFIG)\trust\private
+        copy $(contentTrust.secureFilePath) $(DOCKER_CONFIG)\trust\private
+        echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)\trust\private"
+        move $(DOCKER_CONFIG)\trust\private\b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)\trust\private\$KEY_ID.key
         
       env:
         DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
@@ -66,7 +66,7 @@ stages:
           set DOCKER_CONFIG=./.docker
           set DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
           set DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$(DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE)
-          set trust key load $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+          set trust key load $(DOCKER_CONFIG)\trust\private\$KEY_ID.key
           set DOCKER_CONTENT_TRUST=1
           docker trust sign $(containerRegistry)/$(imageRepository):$(tag)
           docker trust inspect --pretty $(containerRegistry)/$(imageRepository):$(tag) 
