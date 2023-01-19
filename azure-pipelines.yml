@@ -1,0 +1,99 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- none
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  containerRegistryServiceConnection: 'conRegistryServiceConnection'
+  imageRepository: 'signedrepo'
+  containerRegistry: 'signedimgcon.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+pool: windowspool
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - task: Docker@2
+      inputs:
+        command: login
+        containerRegistry: $(containerRegistryServiceConnection)
+
+    - task: DownloadSecureFile@1
+      name: contentTrust
+      inputs:
+        secureFile: b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key
+
+    - script: |
+        mkdir -p $(DOCKER_CONFIG)/trust/private
+        cp $(contentTrust.secureFilePath) $(DOCKER_CONFIG)/trust/private
+        echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)/trust/private"
+        mv $(DOCKER_CONFIG)/trust/private/b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+        notary key export --key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key -o $(DOCKER_CONFIG)/trust/private/key-name.pem
+        chmod 600 $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+        
+        # docker trust key load $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+      env:
+        DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
+        KEY_ID: 987554
+    - task: Docker@2
+      inputs:
+        command: build
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(containerRegistryServiceConnection)
+        repository: $(imageRepository)
+        tags: |
+          $(tag)
+        arguments: '--disable-content-trust=false'
+
+    - task: AzureCLI@2
+      displayName: Content Trust Sign and Push
+      inputs:
+        azureSubscription: 'RmServiceConnection'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+        
+          export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
+          export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$(DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE)
+          docker trust key load $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+          export DOCKER_CONTENT_TRUST=1
+          docker trust sign $(containerRegistry)/$(imageRepository):$(tag)
+          docker trust inspect --pretty $(containerRegistry)/$(imageRepository):$(tag) 
+      env:
+        DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
+        DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE: $(DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE)
+        KEY_ID: 987554
+     
+    # - task: Docker@2
+    #   inputs:
+    #     command: build
+    #     dockerfile: $(dockerfilePath)
+    #     containerRegistry: $(containerRegistryServiceConnection)
+    #     repository: $(imageRepository)
+    #     tags: |
+    #       $(tag)
+    #     arguments: '--disable-content-trust=false'
+
+    # - task: Docker@2
+    #   inputs: 
+    #     command: push
+    #     containerRegistry: $(containerRegistryServiceConnection)
+    #     repository: $(imageRepository)
+    #     tags: |
+    #       $(tag)
+    #     arguments: '--disable-content-trust=false'
+    #   env:
+    #     DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
