@@ -37,6 +37,7 @@ stages:
         secureFile: b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key
 
     - script: |
+        export DOCKER_CONFIG=./.docker
         mkdir -p $(DOCKER_CONFIG)/trust/private
         copy $(contentTrust.secureFilePath) $(DOCKER_CONFIG)/trust/private
         echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)/trust/private"
@@ -62,7 +63,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-        
+          export DOCKER_CONFIG=./.docker
           export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
           export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$(DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE)
           docker trust key load $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
