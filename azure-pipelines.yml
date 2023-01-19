@@ -40,7 +40,7 @@ stages:
         mkdir -p $(DOCKER_CONFIG)/trust/private
         copy $(contentTrust.secureFilePath) $(DOCKER_CONFIG)/trust/private
         echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)/trust/private"
-        mv $(DOCKER_CONFIG)/trust/private/b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
+        move $(DOCKER_CONFIG)/trust/private/b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
         notary key export --key $(DOCKER_CONFIG)/trust/private/$KEY_ID.key -o $(DOCKER_CONFIG)/trust/private/key-name.pem
         chmod 600 $(DOCKER_CONFIG)/trust/private/$KEY_ID.key
         
