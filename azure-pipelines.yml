@@ -42,7 +42,7 @@ stages:
         copy $(contentTrust.secureFilePath) $(DOCKER_CONFIG)\trust\private
         echo "Copied $(contentTrust.secureFilePath) to $(DOCKER_CONFIG)\trust\private"
         move $(DOCKER_CONFIG)\trust\private\b67a0b2a19145f5c3f85cc5ddec6c6c8de7dc644ebca3b28923371434b2c5378.key $(DOCKER_CONFIG)\trust\private\$KEY_ID.key
-        set trust key load $(DOCKER_CONFIG)\trust\private\$KEY_ID.key
+      
       env:
         DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: $(DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE)
         KEY_ID: 987554
